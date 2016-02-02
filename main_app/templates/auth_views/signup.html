@@ -1,9 +1,12 @@
-{% extends "auth_views/base.html" %}
+{% extends "base.html" %}
 {% block content %}
 {% import "bootstrap/wtf.html" as wtf %}
 <div class="container center_div">
     <div class="row">
         <div class="col-md-4 col-centered">
+            {% if error != None: %}
+                <div class="notif" > {{ error }} </div>
+            {% endif %}
             {{ wtf.quick_form(form) }}
         </div>
     </div>

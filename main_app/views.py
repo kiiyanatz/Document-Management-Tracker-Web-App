@@ -4,46 +4,77 @@ from .forms import LoginForm
 from .forms import SignUpForm
 from main_app import db
 from main_app.models import User
-
+from werkzeug.security import check_password_hash, generate_password_hash
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    if session['logged_in'] == True:
+        db_users = User.query.all()
+        db.session.commit()
+        return render_template('index.html', users=db_users)
+    return redirect('auth_views/signin.html')
 
 
 @app.route('/signin', methods=['GET', 'POST'])
 def signin():
+    ''' Sign's user in and renders login view'''
+
+    # Create form instance
+    form = LoginForm()
+
+    if request.method == "POST":
+        db_data = User.query.filter_by(email=form.email.data).first()
+        if db_data == None:
+            return render_template('auth_views/signin.html', form=form, msg="Account not found")
+        if check_password_hash(db_data.password, form.password.data):
+            session['logged_in'] = True
+            session['username'] = db_data.username
+
+            return render_template('protected_views/home.html')
+    return render_template('auth_views/signin.html', form=form)
+
+    '''
     form = LoginForm()
 
     input_username = ''
     input_password = ''
 
     if form.validate_on_submit():
-        input_username = form.email.data
+        input_email = form.email.data
         input_password = form.password.data
 
-        # Validate data for login
+        # Get database details
+        db_data = User.query.filter_by(email=input_email).first()
 
-        return "Name is: " + input_username + " password is: " + input_password
-    # Get database details
-    #db_user = User.query.filter_by(username='kiiyanatz').all()
+        if db_data == None:
+            return render_template('auth_views/signin.html', form=form, msg="Account does not exist")
+        # Validate data for login
+        if check_password_hash(db_data.password, input_password):
+            user_name = db_data.username
+            return render_template('protected_views/home.html', user=user_name)
+
     return render_template('auth_views/signin.html', form=form)
+    '''
 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = SignUpForm()
-    if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
+    msg = None
+    try:
+        if form.validate_on_submit():
+            username = form.username.data
+            email = form.email.data
+            password = generate_password_hash(form.password.data)
 
-        # Create database
-        db.create_all()
-        db.session.add(User(username, email, password))
-        db.session.commit()
+            # Add user to db
+            db.create_all()
+            db.session.add(User(username, email, password))
+            db.session.commit()
 
-        return redirect('/')
-
-    else:
-        return render_template('auth_views/signup.html', form=form)
+            return redirect('/signin')
+        else:
+            return render_template('auth_views/signup.html', form=form)
+    except Exception as e:
+        error = None
+        return render_template('auth_views/signup.html', error=e.message, form=form)

@@ -1,17 +1,11 @@
 {% extends "bootstrap/base.html" %}
 {% block title %}
-Home - Document management
 {% endblock %}
 
 {% block styles %}
 {{ super() }}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
-    <style>
-        body {
-            background-image: url("{{ url_for('static', filename='images/bg.png') }}");
-        }
-    </style>
 {% endblock %}
 
 {% block navbar %}
@@ -31,7 +25,7 @@ Home - Document management
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/signup">Signup</a></li>
-                <li><a href="/signin">Signin</a></li>
+                <li><a href="/signin" class="active">Signin</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
@@ -39,21 +33,7 @@ Home - Document management
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="jumbotron jumbotron-clear">
-        <h1>Homepage</h1>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        <h1>List of users</h1>
-        {% for user in users: %}
-        <li>{{ user.username }} : {{ user.password }} : {{ user.email }} </li>
-        {% endfor %}
-    </div>
-</div>
+
 {% endblock %}
 
 {% block scripts %}

@@ -26,14 +26,16 @@ def signin():
     if request.method == "POST":
         db_data = User.query.filter_by(email=form.email.data).first()
 
-        if db_data == None:
-            return render_template('auth_views/signin.html', form=form, msg='Account not found')
+        if db_data is None:
+            return render_template('auth_views/signin.html',
+                                   form=form, msg='Account not found')
         elif check_password_hash(db_data.password, form.password.data):
             session['logged_in'] = True
             session['username'] = db_data.username
             return redirect('/protected_views/home.html')
         else:
-            return render_template('auth_views/signin.html', form=form, msg="Wrong password or email")
+            return render_template('auth_views/signin.html',
+                                   form=form, msg="Wrong password or email")
     else:
         return render_template('auth_views/signin.html', form=form)
 
@@ -50,30 +52,30 @@ def user_home():
             link = form.link.data
             keyword = form.keywords.data
             dep = form.department.data
-            #filename = secure_filename(form.file_path.data)
+
+            # filename = secure_filename(form.file_path.data)
             filename = 'sdfghjk.pdf'
+            uploader = session['username']
 
             # Save to file system
             form.file_path.data.save('uploads/' + filename)
 
-
             # Add document to db
-            db.session.add(Document(title, link, keyword, dep, 'upload/'+filename))
+            db.session.add(
+                Document(title, link, keyword, dep, 'upload/'+filename, uploader))
             db.session.commit()
 
             return redirect('protected_views/home.html')
         else:
-            return render_template('protected_views/home.html', form=form, search_form=search_form, docus=docus)
-        # except Exception as e:
-          #  error = None
-           # return render_template('protected_views/home.html',
-           # error=e.message, form=form, docus=docus)
-    else:
-        return render_template('protected_views/home.html', form=form, search_form=search_form, docus=docus)
+            return render_template('protected_views/home.html',
+                                   form=form,
+                                   search_form=search_form,
+                                   docus=docus)
 
-#@app.route('/protected_views/home.html')
-#def search():
-#    form = SearchForm()
+    else:
+        return render_template('protected_views/home.html', form=form,
+                               search_form=search_form, docus=docus)
+
 
 @app.route('/logout')
 def logout():
@@ -84,21 +86,17 @@ def logout():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     form = SignUpForm()
-    msg = None
-    try:
-        if form.validate_on_submit():
-            username = form.username.data
-            email = form.email.data
-            password = generate_password_hash(form.password.data)
 
-            # Add user to db
-            db.create_all()
-            db.session.add(User(username, email, password))
-            db.session.commit()
+    if form.validate_on_submit():
+        username = form.username.data
+        email = form.email.data
+        password = generate_password_hash(form.password.data)
 
-            return redirect('/signin')
-        else:
-            return render_template('auth_views/signup.html', form=form)
-    except Exception as e:
-        error = None
-        return render_template('auth_views/signup.html', error=e.message, form=form)
+        # Add user to db
+        db.create_all()
+        db.session.add(User(username, email, password))
+        db.session.commit()
+
+        return redirect('/signin')
+    else:
+        return render_template('auth_views/signup.html', form=form)

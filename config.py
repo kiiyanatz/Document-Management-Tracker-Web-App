@@ -10,3 +10,8 @@ SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
 
 SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 SQLALCHEMY_TRACK_MODIFICATIONS = True
+
+UPLOAD_FOLDER = basedir + '/uploads'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'docx', 'doc'])
+
+DEBUG_TB_PROFILER_ENABLED = True

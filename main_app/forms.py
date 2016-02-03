@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms.fields import TextField, PasswordField, SubmitField, SelectField
+from wtforms.fields import TextField, PasswordField, SubmitField, SelectField, FileField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional
 
 
@@ -24,5 +24,19 @@ class FileUploadForm(Form):
     link = TextField('Link', [Optional()])
     keywords = TextField('Keywords', [DataRequired()])
     department = SelectField(
-        'Department', choices=[('cpp', 'C++'), ('py', 'Python'), ('text', 'Plain Text')])
+        'Department', choices=[('Success', 'Success'), 
+        ('Training', 'Training'), 
+        ('Operations', 'Operations'), 
+        ('Finance', 'Finance'), 
+        ('Recruitment', 'Recruitment'),
+        ('Sales', 'Sales'),
+        ('Marketing', 'Marketing')
+        ])
+    file_path = FileField('Your document')
     submit = SubmitField('Upload')
+
+class SearchForm(Form):
+    search_input = TextField('Search', [DataRequired()])
+    submit = SubmitField('Search')
+
+

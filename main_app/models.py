@@ -32,9 +32,11 @@ class Document(db.Model):
     link = db.Column(db.String(255), unique=True)
     keywords = db.Column(db.String(255))
     department = db.Column(db.String(80))
+    file_path = db.Column(db.String(100))
 
-    def __init__(self, title, link, keywords, department):
+    def __init__(self, title, link, keywords, department, file_path):
         self.title = title
         self.link = link
         self.keywords = keywords
         self.department = department
+        self.file_path = file_path

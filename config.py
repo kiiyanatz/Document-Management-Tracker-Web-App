@@ -1,8 +1,12 @@
+import os
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+
 DEBUG = True
 
 SECRET_KEY = "slkdjf49859043kdjg43398"
 
+SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
 
-SQLALCHEMY_DATABASE_URI = 'sqlite:////home/kiiyanatz/Desktop/projects/app_two/doc_app.sqlite'
-
+SQLALCHEMY_COMMIT_ON_TEARDOWN = True
 SQLALCHEMY_TRACK_MODIFICATIONS = True

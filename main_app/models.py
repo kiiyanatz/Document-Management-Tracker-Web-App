@@ -11,7 +11,6 @@ class User(db.Model):
     email = db.Column(db.String(120))
     password = db.Column(db.String(100))
 
-
     def __init__(self, username, email, password):
         self.username = username
         self.email = email
@@ -20,21 +19,22 @@ class User(db.Model):
     def __repr__(self):
         return '<User %r>' % self.username
 
+
 class Document(db.Model):
+
     '''
     Model for the documents
     '''
     __tablename__ = "documents"
 
     id = db.Column(db.Integer, primary_key=True)
-    document_name = db.Column(db.String(80), unique=True)
-    document_keywords = db.Column(db.String(255))
+    title = db.Column(db.String(80), unique=True)
+    link = db.Column(db.String(255), unique=True)
+    keywords = db.Column(db.String(255))
+    department = db.Column(db.String(80))
 
-class Department(db.Model):
-    '''
-    The database model for each department
-    '''
-    __tablename__ = "departments"
-
-    id = db.Column(db.Integer, primary_key=True)
-    dep_name = db.Column(db.String(80), unique=True)
+    def __init__(self, title, link, keywords, department):
+        self.title = title
+        self.link = link
+        self.keywords = keywords
+        self.department = department

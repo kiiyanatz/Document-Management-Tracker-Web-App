@@ -1,13 +1,16 @@
-from main_app import app
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, flash
+from werkzeug.security import check_password_hash, generate_password_hash
+
 from .forms import LoginForm
 from .forms import SignUpForm
-from main_app import db
-from main_app.models import User
-from werkzeug.security import check_password_hash, generate_password_hash
+from .forms import FileUploadForm
+from .models import db, User, Document
+from main_app import app
+
 
 @app.route('/')
 def home():
+    db.create_all()
     db_users = User.query.all()
     db.session.commit()
     return render_template('index.html', users=db_users)
@@ -35,12 +38,40 @@ def signin():
     else:
         return render_template('auth_views/signin.html', form=form)
 
+
 @app.route('/protected_views/home.html', methods=['GET', 'POST'])
 def user_home():
-    if session.get('username') == None:
-        return redirect('/signin')
-    else:
-        return render_template('protected_views/home.html')
+    form = FileUploadForm()
+    docus = Document.query.all()
+    try:
+        if form.validate_on_submit():
+            title = form.title.data
+            link = form.link.data
+            keyword = form.keywords.data
+            dep = form.department.data
+
+            # Add document to db
+            db.create_all()
+            db.session.add(Document(title, link, keyword, dep))
+            db.session.commit()
+
+            return redirect('protected_views/home.html')
+        else:
+            return render_template('protected_views/home.html', form=form, docus=docus)
+    except Exception as e:
+        error = None
+        return render_template('protected_views/home.html', error=e.message, form=form, docus=docus)
+
+    '''
+    db_users = User.query.all()
+    db.session.commit()
+    form = FileUploadForm()
+    if request.method == "POST":
+        flash("Something")
+    if session.get('username'):
+        return render_template('protected_views/home.html', form=form, db_users=db_users)
+    return redirect('/signin') '''
+
 
 @app.route('/logout')
 def logout():

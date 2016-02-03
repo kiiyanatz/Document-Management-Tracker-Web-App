@@ -1,9 +1,29 @@
 {% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 {% block title %}
 Home Document Manager
 {% endblock %}
 
+
+
 {% block navbar %}
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Upload document</h4>
+      </div>
+      <div class="modal-body">
+          {{ wtf.quick_form(form) }}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 <nav class="navbar navbar-default">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -29,8 +49,8 @@ Home Document Manager
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
-                <li><button class="btn btn-default navbar-btn" type="button" data-toggle="modal" data-target="#upload_modal"><span class="glyphicon glyphicon-upload"></span> Upload file</button></li>
-                <li><a href="/logout">Logout<span class="glyphicon glyphicon-log-out"></span> </a></li>
+                <li><button id="modal_show" class="btn btn-default navbar-btn" type="button" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-upload"></span> Upload file</button></li>
+                <li><a href="/logout">Logout &nbsp;<span class="glyphicon glyphicon-log-out"></span></a></li>
                 <li><a href="/signin" class="active">Account settings</a></li>
             </ul>
         </div><!-- /.navbar-collapse -->
@@ -39,30 +59,27 @@ Home Document Manager
 {% endblock %}
 
 {% block content %}
-<div class="modal fade" id="upload_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
 <div class="container-fluid">
     <div class="jumbotron">
         <h1 class="text-center">Members Area</h1>
         <h3 class="text-center">Welcome {{ session['username'] }} </h3>
     </div>
-    <div class="well col-md-4"></div>
+    <div class="well col-md-4">
+        <h3>Users</h3>
+        {% for doc in docus: %}
+        <li>{{ doc.title }} : {{ doc.link }} : {{ doc.keywords }} {{ doc.department }}</li>
+        {% endfor %}
+    </div>
     <div class="well col-md-4"></div>
     <div class="well col-md-4"></div>
 </div>
 {% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/user_home.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.12.0.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+
+
+{% endblock %}
+

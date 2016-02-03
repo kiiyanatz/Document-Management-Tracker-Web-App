@@ -8,11 +8,9 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 @app.route('/')
 def home():
-    if session['logged_in'] == True:
-        db_users = User.query.all()
-        db.session.commit()
-        return render_template('index.html', users=db_users)
-    return redirect('auth_views/signin.html')
+    db_users = User.query.all()
+    db.session.commit()
+    return render_template('index.html', users=db_users)
 
 
 @app.route('/signin', methods=['GET', 'POST'])
@@ -21,40 +19,33 @@ def signin():
 
     # Create form instance
     form = LoginForm()
+    msg = ''
 
     if request.method == "POST":
         db_data = User.query.filter_by(email=form.email.data).first()
+
         if db_data == None:
-            return render_template('auth_views/signin.html', form=form, msg="Account not found")
-        if check_password_hash(db_data.password, form.password.data):
+            return render_template('auth_views/signin.html', form=form, msg='Account not found')
+        elif check_password_hash(db_data.password, form.password.data):
             session['logged_in'] = True
             session['username'] = db_data.username
+            return redirect('/protected_views/home.html')
+        else:
+            return render_template('auth_views/signin.html', form=form, msg="Wrong password or email")
+    else:
+        return render_template('auth_views/signin.html', form=form)
 
-            return render_template('protected_views/home.html')
-    return render_template('auth_views/signin.html', form=form)
+@app.route('/protected_views/home.html', methods=['GET', 'POST'])
+def user_home():
+    if session.get('username') == None:
+        return redirect('/signin')
+    else:
+        return render_template('protected_views/home.html')
 
-    '''
-    form = LoginForm()
-
-    input_username = ''
-    input_password = ''
-
-    if form.validate_on_submit():
-        input_email = form.email.data
-        input_password = form.password.data
-
-        # Get database details
-        db_data = User.query.filter_by(email=input_email).first()
-
-        if db_data == None:
-            return render_template('auth_views/signin.html', form=form, msg="Account does not exist")
-        # Validate data for login
-        if check_password_hash(db_data.password, input_password):
-            user_name = db_data.username
-            return render_template('protected_views/home.html', user=user_name)
-
-    return render_template('auth_views/signin.html', form=form)
-    '''
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
 
 
 @app.route('/signup', methods=['GET', 'POST'])

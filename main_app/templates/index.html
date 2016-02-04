@@ -24,11 +24,14 @@ Home - Document management
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Document Track</a>
+            <a class="navbar-brand" href="/">DM</a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
+                {% if dashboard %}
+                    <li><a href="/protected_views/home.html">Dashboard</a> </li>
+                {% endif %}
                 <li><a href="/signup">Signup</a></li>
                 <li><a href="/signin">Signin</a></li>
             </ul>
@@ -39,18 +42,9 @@ Home - Document management
 
 {% block content %}
 <div class="container">
-    <div class="jumbotron jumbotron-clear">
-        <h1>Homepage</h1>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-        <h1>List of users</h1>
-        {% for user in users: %}
-        <li>{{ user.username }} : {{ user.password }} : {{ user.email }} </li>
-        {% endfor %}
+    <div class="jumbotron jumbotron-clear center">
+        <h1>Document-Management-Tracker-Web-App</h1>
+        <h3>An online document management python application</h3>
     </div>
 </div>
 {% endblock %}

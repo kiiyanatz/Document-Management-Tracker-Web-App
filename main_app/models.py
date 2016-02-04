@@ -42,3 +42,14 @@ class Document(db.Model):
         self.department = department
         self.file_path = file_path
         self.uploader = uploader
+
+
+class Department(db.Model):
+
+    __tablename__ = "departments"
+
+    id = db.Column(db.Integer, primary_key=True)
+    department_name = db.Column(db.String(80), unique=True)
+
+    def __init__(self, dep_name):
+        self.department_name = dep_name

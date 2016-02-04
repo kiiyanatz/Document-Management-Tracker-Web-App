@@ -41,3 +41,15 @@ class FileUploadForm(Form):
 class SearchForm(Form):
     search_input = TextField('Search', [DataRequired()])
     submit = SubmitField()
+
+
+class FilterForm(Form):
+    department = SelectField(
+        'Department', choices=[('Success', 'Success'),
+                               ('Training', 'Training'),
+                               ('Operations', 'Operations'),
+                               ('Finance', 'Finance'),
+                               ('Recruitment', 'Recruitment'),
+                               ('Sales', 'Sales'),
+                               ('Marketing', 'Marketing')
+                               ])

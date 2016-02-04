@@ -1,19 +1,21 @@
-from flask import Flask, render_template, request, session, redirect, flash, json
+from flask import Flask, render_template, request, session, redirect, flash, json, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug import secure_filename
+from sqlalchemy import text
+import os
 
 from .forms import LoginForm, SignUpForm, FileUploadForm, SearchForm
 from .models import db, User, Document, Department
 from main_app import app
-from sqlalchemy import text
+
 
 
 @app.route('/')
 def home():
-    db.create_all()
-    db_users = User.query.all()
-    db.session.commit()
-    return render_template('index.html', users=db_users)
+    if session.get('username') is None:
+        return render_template('index.html')
+    else:
+        return render_template('index.html', dashboard=True)
 
 
 @app.route('/signin', methods=['GET', 'POST'])
@@ -61,15 +63,18 @@ def user_home():
             dep = form.department.data
 
             filedata = form.file_path.data
-            filename = secure_filename(filedata.filename)
+            newfilename = secure_filename(filedata.filename)
             uploader = session['username']
 
             # Save to file system
-            form.file_path.data.save('uploads/' + filename)
+            form.file_path.data.save('uploads/' + newfilename)
 
+            # File abspath
+            #basedir = os.path.abspath(os.path.dirname(__file__))
+            file_complete = url_for('static', filename=newfilename)
             # Add document to db
             db.session.add(
-                Document(title, link, keyword, dep, 'upload/'+filename, uploader))
+                Document(title, link, keyword, dep, file_complete, uploader))
             db.session.commit()
 
             return redirect('/protected_views/home.html')
@@ -88,26 +93,6 @@ def user_home():
                            username=session['username'],
                            docus=docus)
 
-
-@app.route('/search', methods=['GET', 'POST'])
-def search():
-    if session.get('username') is None:
-        flash("Login to continue")
-        return redirect('/signin')
-
-    form = FileUploadForm()
-    search_form = SearchForm()
-    docus = Document.query.all()
-    titles = [form.title.name, form.keywords.name,
-              form.department.name, form.uploader.name]
-
-    search_q = request.args.get('q')
-    search_field = request.args.get('search_category')
-
-    result = db.engine.execute("select * from documents where :field = :term", {'field': search_field, 'term':search_q})
-    return render_template('protected_views/home.html', docus=result, titles=titles, form=form)
-
-
 @app.route('/logout')
 def logout():
     session.clear()
@@ -116,15 +101,14 @@ def logout():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
-    form=SignUpForm()
+    form = SignUpForm()
 
     if form.validate_on_submit():
-        username=form.username.data
-        email=form.email.data
-        password=generate_password_hash(form.password.data)
+        username = form.username.data
+        email = form.email.data
+        password = generate_password_hash(form.password.data)
 
         # Add user to db
-        db.create_all()
         db.session.add(User(username, email, password))
         db.session.commit()
 

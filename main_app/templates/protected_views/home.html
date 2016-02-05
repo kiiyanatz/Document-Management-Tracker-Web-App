@@ -54,32 +54,30 @@
                 </div><!-- /.container-fluid --></nav>
             {% endblock %}
             {% block content %}
-            {% if search_category %}
-                {{ search_query }}
-            {% endif %}
-                <div class="container">
+                {% if search_category %}
+                    {{ search_query }}
+                {% endif %}
+                <div class="container-fluid">
                     <div class="row well" id="custom_well">
-
-                            <h2>Type your search query below</h2>
-                            <div class="col-xs-8">
-
-                                <form class="form-inline" role="form" id="yourformID-form" action="#" method="get">
-                                    <div class="input-group">
-                                        <span class="input-group-addon">Search</span>
-                                        <div class="form-group">
-                                            <input class="form-control" id="system-search" name="q" placeholder="Search for" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <button class="form-control" type="submit">Go</button>
-                                        </div>
+                        <h2>Type your search query below</h2>
+                        <div class="col-md-12">
+                            <form class="form-inline" role="form" id="yourformID-form" action="#" method="get">
+                                <div class="input-group">
+                                    <span class="input-group-addon">Search</span>
+                                    <div class="form-group">
+                                        <input class="form-control" id="system-search" name="q" placeholder="Search for" required>
                                     </div>
-                                </form>
-                            </div>
+                                    <div class="form-group">
+                                        <button class="form-control" type="submit">Go</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
+                    <div class="row">
 
-                    <div class="row vdivide">
-                        <div class="col-md-10">
-                            <table class="table table-list-search table-bordered" id="result_table">
+                        <div class="col-md-10 well">
+                            <table class="table table-list-search" id="result_table">
                                 <thead class="tablehead_style">
                                     <tr>
                                         <th>Document Title</th>
@@ -91,31 +89,34 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                {{ docus.title }}
+                                    {{ docus.title }}
                                     {% for doc in docus %}
                                         <tr>
                                             <td>{{ doc.title }}</td>
                                             <td><a href="{{ doc.link }}">{{ doc.link }}</a></td>
                                             <td>{{ doc.keywords }}</td>
                                             <td>{{ doc.department }}</td>
-                                            <td><a href="{{doc.file_path}}">{{ doc.file_path }}</a></td>
+                                            <td><a href="{{doc.file_path}}">{{ doc.title }}</a></td>
                                             <td>{{ doc.uploader }}</td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-md-2">
+
+                        <div class="col-md-2" well>
                             <h4 class="tablehead_style file_header">Latest Files</h4>
-                            {% for doc in docus: %}
-                                <li><a href="{{ doc.link }}">{{ doc.title }}</a></li>
+                            {% for top_five in top_documents: %}
+                                <li><a href="{{ top_five.link }}">{{ top_five.title }}</a></li>
                             {% endfor %}
                         </div>
+                        
                     </div>
                 </div>
             {% endblock %}
-            {% block scripts %}
-                <script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.12.0.min.js') }}"></script>
-                <script type="text/javascript" src="{{ url_for('static', filename='js/user_home.js') }}"></script>
-                <script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
-            {% endblock %}
+            
+{% block scripts %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-1.12.0.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/user_home.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.js') }}"></script>
+{% endblock %}

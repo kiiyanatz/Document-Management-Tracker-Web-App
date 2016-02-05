@@ -1,7 +1,7 @@
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_bootstrap import Bootstrap
-from flask_debugtoolbar import DebugToolbarExtension
+
 
 
 # Create flask application
@@ -15,6 +15,6 @@ app.config.from_object('config')
 # Database base model
 db = SQLAlchemy(app)
 
-toolbar = DebugToolbarExtension(app)
+
 
 import main_app.views

@@ -21,7 +21,7 @@ class SignUpForm(Form):
 
 class FileUploadForm(Form):
     title = TextField(
-        'Document title', [DataRequired(), Length(min=5, max=255)])
+        'Document title', [DataRequired(), Length(max=100)])
     link = TextField('Link', [Optional()])
     keywords = TextField('Keywords', [DataRequired()])
     department = SelectField(

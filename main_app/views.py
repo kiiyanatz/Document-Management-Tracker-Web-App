@@ -9,7 +9,6 @@ from .models import db, User, Document, Department
 from main_app import app
 
 
-
 @app.route('/')
 def home():
     if session.get('username') is None:
@@ -54,6 +53,13 @@ def user_home():
     docus = Document.query.all()
     titles = [form.title.name, form.keywords.name,
               form.department.name, form.uploader.name]
+    top_documents = Document.query.order_by(Document.id.desc()).limit(5).all()
+    # Pagination
+    page = request.args.get('page', 1, type=int)
+    pagination = Document.query.order_by(Document.id.desc()).paginate(
+        page, per_page=10,
+        error_out=False)
+    documents = pagination.items
     if request.method == "POST":
         # try:
         if form.validate_on_submit():
@@ -67,14 +73,15 @@ def user_home():
             uploader = session['username']
 
             # Save to file system
-            form.file_path.data.save('uploads/' + newfilename)
+            form.file_path.data.save('./main_app/static/' + newfilename)
 
             # File abspath
             #basedir = os.path.abspath(os.path.dirname(__file__))
-            file_complete = url_for('static', filename=newfilename)
+            file_path = url_for('static', filename=newfilename)
+
             # Add document to db
             db.session.add(
-                Document(title, link, keyword, dep, file_complete, uploader))
+                Document(title, link, keyword, dep, file_path, uploader))
             db.session.commit()
 
             return redirect('/protected_views/home.html')
@@ -84,6 +91,9 @@ def user_home():
                                    search_form=search_form,
                                    titles=titles,
                                    username=session['username'],
+                                   top_documents=top_documents,
+                                   pagination=pagination,
+                                   posts=documents,
                                    docus=docus)
 
     return render_template('protected_views/home.html',
@@ -91,12 +101,21 @@ def user_home():
                            search_form=search_form,
                            titles=titles,
                            username=session['username'],
+                           top_documents=top_documents,
+                           pagination=pagination,
+                           posts=documents,
                            docus=docus)
+
 
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect('/')
+
+
+@app.route('/download/<filename>')
+def download(filename):
+    pass
 
 
 @app.route('/signup', methods=['GET', 'POST'])

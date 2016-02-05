@@ -77,7 +77,7 @@ def user_home():
 
             # File abspath
             #basedir = os.path.abspath(os.path.dirname(__file__))
-            file_path = url_for('static', filename=newfilename)
+            file_path = url_for('static', filename='uploads/'+newfilename)
 
             # Add document to db
             db.session.add(

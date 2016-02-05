@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, session, redirect, flash, json, url_for
+from flask import Flask, render_template, request,\
+    session, redirect, flash, json, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug import secure_filename
 from sqlalchemy import text
@@ -44,16 +45,18 @@ def signin():
 
 @app.route('/protected_views/home.html', methods=['GET', 'POST'])
 def user_home():
+    ''' This is the main application's controller/view '''
     if session.get('username') is None:
-        flash("Login to continue")
-        return redirect('/signin')
+            flash("Login to continue")
+            return redirect('/signin')
 
     form = FileUploadForm()
     search_form = SearchForm()
     docus = Document.query.all()
     titles = [form.title.name, form.keywords.name,
               form.department.name, form.uploader.name]
-    top_documents = Document.query.order_by(Document.id.desc()).limit(5).all()
+    top_documents = Document.query.order_by(
+        Document.id.desc()).limit(5).all()
     # Pagination
     page = request.args.get('page', 1, type=int)
     pagination = Document.query.order_by(Document.id.desc()).paginate(
@@ -73,10 +76,10 @@ def user_home():
             uploader = session['username']
 
             # Save to file system
-            form.file_path.data.save('./main_app/static/uploads/' + newfilename)
+            form.file_path.data.save(
+                './main_app/static/uploads/' + newfilename)
 
             # File abspath
-            #basedir = os.path.abspath(os.path.dirname(__file__))
             file_path = url_for('static', filename='uploads/'+newfilename)
 
             # Add document to db
@@ -113,24 +116,24 @@ def logout():
     return redirect('/')
 
 
-@app.route('/download/<filename>')
-def download(filename):
-    pass
-
-
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    ''' Handles user registration '''
     form = SignUpForm()
 
     if form.validate_on_submit():
         username = form.username.data
         email = form.email.data
         password = generate_password_hash(form.password.data)
-
-        # Add user to db
-        db.session.add(User(username, email, password))
-        db.session.commit()
+        if User.query.filter_by(email=form.email.data).first() is None or User.query.filter_by(username=form.username.data).first() is None:
+            # Add user to db
+            db.session.add(User(username, email, password))
+            db.session.commit()
+        else:
+            flash("User already exists")
+            render_template('auth_views/signup.html', form=form)
 
         return redirect('/signin')
     else:
         return render_template('auth_views/signup.html', form=form)
+

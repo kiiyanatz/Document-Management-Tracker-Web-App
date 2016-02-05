@@ -4,9 +4,9 @@
 <div class="container center_div">
     <div class="row">
         <div class="col-md-4 col-centered">
-            {% if error %}
-                <div class="notif" > {{ error }} </div>
-            {% endif %}
+            {% for message in get_flashed_messages() %}
+                <div class="notif" > {{ message }} </div>
+            {% endfor %}
             {{ wtf.quick_form(form) }}
         </div>
     </div>

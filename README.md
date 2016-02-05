@@ -1,4 +1,4 @@
-# Document Management Web App (ODTM)
+# Online Document Management and Tracking App (ODTM)
 
 ODTM is and online document management and tracking application, built with python and flask microframework Users can
 upload documents based on various categories or departments. The documents are made available to other users under one unified User Interface.

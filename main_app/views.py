@@ -73,7 +73,7 @@ def user_home():
             uploader = session['username']
 
             # Save to file system
-            form.file_path.data.save('./main_app/static/' + newfilename)
+            form.file_path.data.save('./main_app/static/uploads/' + newfilename)
 
             # File abspath
             #basedir = os.path.abspath(os.path.dirname(__file__))

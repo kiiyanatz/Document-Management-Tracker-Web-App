@@ -12,3 +12,4 @@ visitor==0.1.2
 Werkzeug==0.11.3
 wheel==0.26.0
 WTForms==2.1
+https://developers.google.com/drive/v3/web/quickstart/python

@@ -61,4 +61,4 @@ The following messages will be displayed. Use the url to open the application in
 That's all needed to run the application locally on your computer
 
 ### Demo link
-A demo of the application can also be viewed at [here](https://document-management.herokuapp.com/).
+A demo of the application can also be viewed [here](https://document-management.herokuapp.com/).

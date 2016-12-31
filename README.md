@@ -30,7 +30,7 @@ Install python pip
 sudo apt-get install python-pip
 ```
 
-Change into installition directory
+Change into installation directory
 
 ```cmd
 cd Document-Management-Tracker-Web-App.git

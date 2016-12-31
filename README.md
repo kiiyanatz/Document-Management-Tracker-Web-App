@@ -48,7 +48,7 @@ Start application
 python run.py
 ```
 
-The following message will be displayed. Use the url to open application on your browsear
+The following messages will be displayed. Use the url to open the application in your browser
 
 ```
  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
